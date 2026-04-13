@@ -1,0 +1,1095 @@
+#:set BG_COLOR (0.13, 0.35, 0.2, 1)
+#:set BTN_COLOR (0.36, 0.18, 0.04, 1)
+#:set BTN_COLOR_DOWN (0.25, 0.12, 0.02, 1)
+
+MainWidget:
+
+<SafariPopup>
+    title: "About Us"
+    size_hint: 0.8, 0.6
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: "vertical"
+        ScrollView:
+            size_hint: 1, 8
+            Label:
+                text: "Welcome to our Wildlife Safari App — your gateway to exploring nature like never before.\n\nWe are passionate about bringing the beauty, diversity, and wonder of wildlife closer to you through technology. Our platform is designed to provide an immersive and informative experience for nature lovers, travelers, and adventure seekers. Whether you're planning a real safari trip or simply exploring from your home, we aim to make every interaction engaging and meaningful.\n\nOur app offers features such as interactive safari maps, animal information, real-time updates, and seamless booking options. We believe in promoting responsible tourism and raising awareness about wildlife conservation, ensuring that future generations can continue to experience the magic of nature.\n\nDriven by innovation and a love for the wild, our team is committed to delivering a smooth, reliable, and enriching user experience. Join us on this journey and discover the untamed beauty of the natural world.\n\nExplore. Learn. Protect."
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                halign: "left"
+                valign: "top"
+                padding: 10, 10
+        ForestButton:
+            text: "Contact Us"
+            on_press:
+                root.dismiss()
+                app.root.show_safari()
+
+<WarningPopup>
+    title: "Warning"
+    id: WarningPopup
+    size_hint: 0.8, 0.6
+    auto_dismiss: False
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        Label:
+            size_hint: 1, 5
+            text_size: self.width, self.height
+            halign: "center"
+            valign: "center"
+            text: "After leaving this page, your tickets will be considered invalid and this page won't be accessible.\n\nSafari Ended!\nThank You!"
+
+        ForestButton:
+            text: "Back to Safari"
+            on_press: root.dismiss()
+
+        ForestButton:
+            text: "Close Safari"
+            on_press:
+                root.dismiss()
+                app.root.show_report()
+
+
+<TicketPopup>
+    title: "Ticket"
+    id: TicketPopup
+    size_hint: 0.8, 0.6
+    auto_dismiss: False
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        BoxLayout:
+            size_hint: 1, 0.5
+            Label:
+                size_hint: 12, 1
+            ForestButton:
+                text: "Close"
+                on_press:
+                    root.dismiss()
+
+        ScrollView:
+            size_hint: 1, 3
+            Label:
+                text: "• Arrive at the reporting point on time.\n• Late arrivals may miss their allocated safari slot.\n• Do not feed or provoke any wildlife.\n• Keep hands and belongings inside the vehicle.\n• Follow instructions given by the guide or driver at all times.\n• Do not attempt to approach animals for photos.\n• Flash photography is strictly prohibited.\n• Bring valid ID and booking confirmation.\n• Wear neutral-colored clothing (avoid bright colors).\n• Carry hats, sunglasses, and water for comfort.\n• Do not throw plastic, food wrappers, or waste inside the forest.\n• Do not damage plants or disturb the ecosystem.\n• Respect forest rules and protected areas.\n• Maintain a safe distance from animals at all times.\n• Maintain a calm and quiet environment.\n• Click the 'Start Safari' button only when you are about to start safari."
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                halign: "left"
+                valign: "top"
+                padding: 10, 10
+
+        BoxLayout:
+            size_hint: 1, 0.5
+            spacing: 10
+
+            CheckBox:
+                id: agree_checkbox
+                size_hint_x: 0.2
+                on_active: root.toggle_button(self.active)
+
+            Label:
+                text: "I have read all the instructions!"
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+
+        ForestButton:
+            size_hint: 1, 1
+            id: start_btn
+            text: "Start Safari"
+            disabled: True
+            on_press:
+                root.start_safari()
+
+<SelfPopup>
+    title: "Settings"
+    size_hint: 0.8, 0.6
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: "vertical"
+
+        BoxLayout:
+            size_hint: 1, 0.1
+            Label:
+                size_hint: 12, 1
+            ForestButton:
+                text: "Close"
+                on_press:
+                    root.dismiss()
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: 20
+            spacing: 20
+            ForestButton:
+                text: "About Safari"
+                on_press:
+                    root.dismiss()
+                    app.open_safari_popup()
+            ForestButton:
+                text: "Contact Us"
+            ForestButton:
+                text: "Log Out"
+                on_press:
+                    root.dismiss()
+                    app.root.show_login_home()
+
+<BookingPopup>
+    title: "Book Tickets"
+    size_hint: 0.8, 0.6
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: "vertical"
+
+        BoxLayout:
+            size_hint: 1, 0.1
+            BoxLayout:
+                size_hint: 12, 1
+                Label:
+                    id: date_label
+                Label:
+                    id: time_label
+            ForestButton:
+                text: "Close"
+                on_press:
+                    root.dismiss()
+
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 10
+            padding: 10
+
+            TextInput:
+                size_hint: 1, 0.5
+                id: name_input
+                multiline:False
+                hint_text: "Enter Name"
+                on_text: root.validate_booking()
+
+            TextInput:
+                size_hint: 1, 0.5
+                id: seats_input
+                hint_text: "Number of Seats"
+                multiline: False
+                input_filter: 'int'
+                on_text:
+                    root.calculate_total()
+                    root.validate_booking()
+
+            BoxLayout:
+                size_hint: 1, 2
+                Label:
+                    halign: 'center'
+                    valign: 'middle'
+                    id: total_label
+                    text: "Total: ₹0"
+
+                Image:
+                    id: qr_image
+                    source: ""
+
+            ForestButton:
+                id: confirm_btn
+                disabled: True
+                text: "Confirm Booking"
+                on_press: root.confirm_booking()
+
+<MainWidget>:
+    BoxLayout:
+        id: container
+
+<ReportLayout>:
+    padding: 20
+    canvas.before:
+        Color:
+            rgba: BG_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: "vertical"
+
+    BoxLayout:
+        padding: 10
+        spacing: 10
+        size_hint: 1, None
+        height : "60dp"
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Safari"
+            on_press: app.open_safari_popup()
+        Label:
+            text: "Safari App"
+            font_size: "40sp"
+            font_name: "fonts/WinterSong.ttf"
+            size_hint: 8, 1
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Close"
+            on_press: app.open_self_popup()
+
+    BoxLayout:
+        orientation: "vertical"
+
+        ScrollView:
+            size_hint: 1, 8
+
+            Label:
+                id: Report
+                text: ""
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                halign: "left"
+                valign: "top"
+        Button:
+            text: "Show Checkpoints"
+
+<SafariLayout>:
+    padding: 20
+    canvas.before:
+        Color:
+            rgba: BG_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: "vertical"
+
+    BoxLayout:
+        padding: 10
+        spacing: 10
+        size_hint: 1, None
+        height : "60dp"
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Safari"
+            on_press: app.open_safari_popup()
+        Label:
+            text: "Safari App"
+            font_size: "40sp"
+            font_name: "fonts/WinterSong.ttf"
+            size_hint: 8, 1
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Close"
+            on_press: app.open_warning_popup()
+
+    BoxLayout:
+        size_hint: 1, 6
+        padding: 20
+        spacing: 20
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+
+            Label:
+                id: info_label
+                text: ""
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                halign: "left"
+                valign: "top"
+        Image:
+            size_hint_x: 2
+            id: cam_feed
+
+    ForestButton:
+        id: Move_btn
+        text: "Move next"
+        on_press: root.move_car()
+
+    BoxLayout:
+        padding: 20
+        spacing: 20
+        Label:
+            id: location_label
+        Label:
+            id: time_label
+            text: "Time Elapsed : 00:00"
+
+<HomeLoginLayout>:
+    canvas.before:
+        Color:
+            rgba: BG_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    padding: 20
+    spacing: 20
+    orientation: "vertical"
+    BoxLayout:
+        padding: 10
+        spacing: 10
+        size_hint: 1, None
+        height : "60dp"
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Safari"
+            on_press: app.open_safari_popup()
+        Label:
+            text: "Safari App"
+            font_size: "40sp"
+            font_name: "fonts/WinterSong.ttf"
+            size_hint: 8, 1
+        ForestButton:
+            disabled: True
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Info"
+            on_press: app.open_self_popup()
+
+    BoxLayout:
+        size_hint: 1, 8
+        padding: 20
+        spacing: 20
+        orientation: "vertical"
+        ImageCircleButton:
+            source: "person.png"
+            pos_hint: {"center_x":0.5}
+        TextInput:
+            id: name_input
+            multiline: False
+            hint_text: "Full Name"
+            on_text: root.validate_signin()
+        TextInput:
+            id: mob_input
+            multiline: False
+            hint_text: "Mobile No."
+            on_text: root.validate_signin()
+        TextInput:
+            id: email_input
+            multiline: False
+            hint_text: "Email Id"
+            on_text: root.validate_signin()
+        ForestButton:
+            id: signin_button
+            text: "Sign In"
+            disabled: True
+            on_press:
+                root.send_login()
+                app.root.show_user_home(name_input.text)
+
+    BoxLayout:
+        padding: 10
+        spacing: 20
+        ForestButton:
+            disabled: True
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height]
+            text: "Book"
+            on_press: app.root.show_booking()
+        ForestButton:
+            disabled: True
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height]
+            text: "Tickets"
+            on_press: app.root.show_ticket()
+
+<HomeUserLayout>:
+    canvas.before:
+        Color:
+            rgba: BG_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    padding: 20
+    spacing: 20
+    orientation: "vertical"
+    BoxLayout:
+        padding: 10
+        spacing: 10
+        size_hint: 1, None
+        height : "60dp"
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Safari"
+            on_press: app.open_safari_popup()
+        Label:
+            text: "Safari App"
+            font_size: "40sp"
+            font_name: "fonts/WinterSong.ttf"
+            size_hint: 8, 1
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Info"
+            on_press: app.open_self_popup()
+
+    BoxLayout:
+        size_hint: 1, 8
+        padding: 20
+        spacing: 50
+        orientation: "vertical"
+        ImageCircleButton:
+            source: "person.png"
+            pos_hint: {"center_x":0.5}
+        Label:
+            id: welcome_label
+            text: "Hi!"
+        BoxLayout:
+            size_hint: 1, 2
+            ForestButton:
+                text: "Book Now!"
+                on_press: app.root.show_booking()
+            Label:
+                size_hint_x: 0.05
+            ForestButton:
+                text: "My Tickets"
+                on_press: app.root.show_ticket()
+
+    BoxLayout:
+        padding: 10
+        spacing: 20
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height]
+            text: "Book"
+            on_press: app.root.show_booking()
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height]
+            text: "Tickets"
+            on_press: app.root.show_ticket()
+
+<TicketLayout>:
+    canvas.before:
+        Color:
+            rgba: BG_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    padding: 10
+    spacing: 10
+    orientation: "vertical"
+    BoxLayout:
+        padding: 10
+        spacing: 10
+        size_hint: 1, None
+        height : "60dp"
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Safari"
+            on_press: app.open_safari_popup()
+        Label:
+            text: "Safari App"
+            font_size: "40sp"
+            font_name: "fonts/WinterSong.ttf"
+            size_hint: 8, 1
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Info"
+            on_press: app.open_self_popup()
+
+    BoxLayout:
+        size_hint: 1, 8
+        padding: 20
+        spacing: 10
+        orientation: "vertical"
+        Label:
+            id: no_ticket
+            opacity: 1
+            text: "You currently have no bookings!"
+        ForestButton:
+            on_press: app.open_ticket_popup(1)
+            id: ticket1
+            disabled: True
+            opacity: 0
+            size_hint: 1, 3
+
+            BoxLayout:
+                orientation: "horizontal"
+                padding: 10
+                spacing: 10
+                size: self.parent.size
+                pos: self.parent.pos
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 5
+                    orientation: "vertical"
+
+                    Label:
+                        id: person1
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                    Label:
+                        id: date1
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                    Label:
+                        id: slot1
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 5
+                    orientation: "vertical"
+
+                    Label:
+                        id: seat1
+                        text: ""
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+                    Label:
+                        id: price1
+                        text: ""
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+
+        ForestButton:
+            on_press: app.open_ticket_popup(2)
+            id: ticket2
+            disabled: True
+            opacity: 0
+            size_hint: 1, 3
+
+            BoxLayout:
+                orientation: "horizontal"
+                padding: 10
+                spacing: 10
+                size: self.parent.size
+                pos: self.parent.pos
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 5
+                    orientation: "vertical"
+
+                    Label:
+                        id: person2
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                    Label:
+                        id: date2
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                    Label:
+                        id: slot2
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 5
+                    orientation: "vertical"
+
+                    Label:
+                        id: seat2
+                        text: ""
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+                    Label:
+                        id: price2
+                        text: ""
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+
+        ForestButton:
+            on_press: app.open_ticket_popup(3)
+            id: ticket3
+            disabled: True
+            opacity: 0
+            size_hint: 1, 3
+
+            BoxLayout:
+                orientation: "horizontal"
+                padding: 10
+                spacing: 10
+                size: self.parent.size
+                pos: self.parent.pos
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 5
+                    orientation: "vertical"
+
+                    Label:
+                        id: person3
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                    Label:
+                        id: date3
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                    Label:
+                        id: slot3
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 5
+                    orientation: "vertical"
+
+                    Label:
+                        id: seat3
+                        text: ""
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+                    Label:
+                        id: price3
+                        text: ""
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+
+        ForestButton:
+            on_press: app.open_ticket_popup(4)
+            id: ticket4
+            disabled: True
+            opacity: 0
+            size_hint: 1, 3
+
+            BoxLayout:
+                orientation: "horizontal"
+                padding: 10
+                spacing: 10
+                size: self.parent.size
+                pos: self.parent.pos
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 5
+                    orientation: "vertical"
+
+                    Label:
+                        id: person4
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                    Label:
+                        id: date4
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                    Label:
+                        id: slot4
+                        text: ""
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+
+                BoxLayout:
+                    padding: 10
+                    spacing: 5
+                    orientation: "vertical"
+
+                    Label:
+                        id: seat4
+                        text: ""
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+                    Label:
+                        id: price4
+                        text: ""
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+
+        Label:
+            id: max_ticket
+            opacity: 0
+            text: "Maximum tickets reached !\nDelete previous tickets"
+            halign: "center"
+    BoxLayout:
+        padding: 10
+        spacing: 20
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height]
+            text: "Home"
+            on_press: app.root.show_user_home()
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height]
+            text: "Book"
+            on_press: app.root.show_booking()
+
+
+<BookingLayout>:
+    canvas.before:
+        Color:
+            rgba: BG_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    padding: 10
+    spacing: 10
+    orientation: "vertical"
+    BoxLayout:
+        padding: 10
+        spacing: 10
+        size_hint: 1, None
+        height : "60dp"
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Safari"
+            on_press: app.open_safari_popup()
+        Label:
+            text: "Safari App"
+            font_size: "40sp"
+            font_name: "fonts/WinterSong.ttf"
+            size_hint: 8, 1
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height/2]
+            text: "Info"
+            on_press: app.open_self_popup()
+
+    GridLayout:
+        size_hint: 1, 8
+        cols: 2
+        Label:
+            text: "Time Slots"
+            text_size: self.width, None
+            halign: 'center'
+            valign: 'middle'
+            size_hint: 0.2, 0.2
+
+        BoxLayout:
+            size_hint: 1, 0.2
+            spacing: 5
+            padding: 5
+            Label:
+                halign: 'center'
+                id: day0
+            Label:
+                halign: 'center'
+                id: day1
+            Label:
+                halign: 'center'
+                id: day2
+            Label:
+                halign: 'center'
+                id: day3
+            Label:
+                halign: 'center'
+                id: day4
+            Label:
+                halign: 'center'
+                id: day5
+            Label:
+                halign: 'center'
+                id: day6
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: 0.2, 1
+            spacing: 5
+            padding: 5
+            Label:
+                text: "09:00\n~\n12:00"
+                text_size: self.width, None
+                halign: 'center'
+                valign: 'middle'
+            Label:
+                text: "14:00\n~\n17:00"
+                text_size: self.width, None
+                halign: 'center'
+                valign: 'middle'
+            Label:
+                text: "18:00\n~\n21:00"
+                text_size: self.width, None
+                halign: 'center'
+                valign: 'middle'
+
+        BoxLayout:
+            spacing: 5
+            padding: 5
+
+            BoxLayout:
+                id: day0buttons
+                orientation: "vertical"
+                spacing: 100
+                padding: 5
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day0.text, '09:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day0.text, '14:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day0.text, '18:00:00', self.text)
+
+            BoxLayout:
+                id: day1buttons
+                orientation: "vertical"
+                spacing: 100
+                padding: 5
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day1.text, '09:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day1.text, '14:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day1.text, '18:00:00', self.text)
+
+            BoxLayout:
+                id: day2buttons
+                orientation: "vertical"
+                spacing: 100
+                padding: 5
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day2.text, '09:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day2.text, '14:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day2.text, '18:00:00', self.text)
+
+            BoxLayout:
+                id: day3buttons
+                orientation: "vertical"
+                spacing: 100
+                padding: 5
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day3.text, '09:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day3.text, '14:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day3.text, '18:00:00', self.text)
+
+            BoxLayout:
+                id: day4buttons
+                orientation: "vertical"
+                spacing: 100
+                padding: 5
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day4.text, '09:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day4.text, '14:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day4.text, '18:00:00', self.text)
+
+            BoxLayout:
+                id: day5buttons
+                orientation: "vertical"
+                spacing: 100
+                padding: 5
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day5.text, '09:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day5.text, '14:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day5.text, '18:00:00', self.text)
+
+            BoxLayout:
+                id: day6buttons
+                orientation: "vertical"
+                spacing: 100
+                padding: 5
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day6.text, '09:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day6.text, '14:00:00', self.text)
+                ForestButton:
+                    text: "60"
+                    on_press: app.open_booking_popup(day6.text, '18:00:00', self.text)
+
+    BoxLayout:
+        padding: 10
+        spacing: 20
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height]
+            text: "Home"
+            on_press: app.root.show_user_home()
+        ForestButton:
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            canvas.before:
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [self.height]
+            text: "Tickets"
+            on_press: app.root.show_ticket()
+
+<ForestButton@Button>:
+    background_color: 0, 0, 0, 0
+    background_normal: ''
+    color: 1, 1, 1, 1
+
+    canvas.before:
+        Color:
+            rgba: BTN_COLOR if self.state == 'normal' else BTN_COLOR_DOWN
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]
+
+<ImageCircleButton@ButtonBehavior+Image>:
+    size_hint: None, None
+    size: "150dp", "150dp"
+    allow_stretch: True
+    keep_ratio: False
+
+    canvas.before:
+        StencilPush
+        Ellipse:
+            pos: self.pos
+            size: self.size
+        StencilUse
+
+    canvas.after:
+        StencilUnUse
+        Ellipse:
+            pos: self.pos
+            size: self.size
+        StencilPop
